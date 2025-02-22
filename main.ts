@@ -42,10 +42,13 @@ function CreatePTPPkt(cmdtype: number, x: number, y: number, z: number, r: numbe
 pins.setPull(0, PinPullMode.PullUp);
 pins.setPull(1, PinPullMode.PullUp);
 pins.setPull(2, PinPullMode.PullUp);
-
-
-
-
+serial.redirect(
+    SerialPin.P1,
+    null,
+    BaudRate.BaudRate115200
+)
 basic.pause(50);
+basic.showIcon(IconNames.Happy);
+
 
 
