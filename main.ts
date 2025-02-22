@@ -39,12 +39,11 @@ function CreatePTPPkt(cmdtype: number, x: number, y: number, z: number, r: numbe
     return buff;
 }
 
-pins.setPull(0, PinPullMode.PullUp);
 pins.setPull(1, PinPullMode.PullUp);
-pins.setPull(2, PinPullMode.PullUp);
+pins.setPull(8, PinPullMode.PullUp);
 serial.redirect(
     SerialPin.P1,
-    null,
+    SerialPin.P8,
     BaudRate.BaudRate115200
 )
 basic.pause(50);
