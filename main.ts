@@ -25,6 +25,25 @@ namespace mintspark_dobot {
         JUMP_MOVL_XYZ, // JUMP mode, (x,y,z,r) is the Cartesian coordinate increment in Cartesian coordinate system
     };
 
+    export enum JogCommand {
+        IDEL, //Void
+        AP_DOWN, // X+/Joint1+
+        AN_DOWN, // X-/Joint1-
+        BP_DOWN, // Y+/Joint2+
+        BN_DOWN, // Y-/Joint2-
+        CP_DOWN, // Z+/Joint3+
+        CN_DOWN, // Z-/Joint3-
+        DP_DOWN, // R+/Joint4+
+        DN_DOWN // R-/Joint4-
+    };
+
+    export enum CoordinateSystem {
+        //% block="Cartesian"
+        Cartesian = 0,
+        //% block="Joint"
+        Joint = 1
+    }
+
     //% weight=100
     //% group="Setup"
     //% block="Initialise DOBOT"
@@ -58,15 +77,6 @@ namespace mintspark_dobot {
         buff.fill(0);
         sendMessage(createDobotPacket(31, 1, 0, buff));
     }
-
-    export enum CoordinateSystem{
-        //% block="Joint"
-        Joint,
-        //% block="Cartesian"
-        Cartesian
-    }
-
-
 
     //% weight=80
     //% group="Setup"
@@ -109,20 +119,30 @@ namespace mintspark_dobot {
         sendMessage(createDobotPacket(82, 1, 0, buff));
     }
 
-
-
-
-    //% weight=60
+    //% weight=50
     //% group="Move"
-    //% block="Move %mode to x %x y %y z %z r %r"
+    //% block="Jog %system command %jogComand"
     //% color=#ffcc66
     //% inlineInputMode=inline
-    export function moveArm(mode: PtpMode, x: number, y: number, z: number, r: number): void {
+    export function moveJog(system: CoordinateSystem, jogComand: JogCommand): void {
+        let buff = pins.createBuffer(2);
+        buff.setNumber(NumberFormat.UInt8LE, 0, system)
+        buff.setNumber(NumberFormat.UInt8LE, 1, jogComand)
+        sendMessage(createDobotPacket(73, 1, 0, buff));
+    }
+
+    //% weight=40
+    //% group="Move"
+    //% block="Move PTP %mode to x %x y %y z %z r %r"
+    //% color=#ffcc66
+    //% inlineInputMode=inline
+    export function movePtp(mode: PtpMode, x: number, y: number, z: number, r: number): void {
         sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(mode, x, y, z, r)));
     }
 
     // Communication functions
 
+    // Send message over serial
     function sendMessage(buffer: Buffer) : void
     {
         serial.writeBuffer(buffer);
