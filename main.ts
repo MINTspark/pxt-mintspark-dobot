@@ -2,21 +2,30 @@
 //% subcategories='["Basic", "Advanced", "AI"]'
 //% groups='["Setup", "Move", "Work"]'
 namespace mintspark_dobot {
-    enum PtpMode {
+    export enum PtpMode {
+        //% block="JUMP XYZ"
         JUMP_XYZ, // JUMP mode, (x,y,z,r) is the target point in Cartesian coordinate system
+        //% block="MOVJ XYZ"
         MOVJ_XYZ, // MOVJ mode, (x,y,z,r) is the target point in Cartesian coordinate system
+        //% block="MOVL XYZ"
         MOVL_XYZ, //MOVL mode, (x,y,z,r) is the target point in Cartesian coordinate system
+        //% block="JUMP ANGLE"
         JUMP_ANGLE, // JUMP mode, (x,y,z,r) is the target point in Joint coordinate system
+        //% block="MOVJ ANGLE"
         MOVJ_ANGLE, // MOVJ mode, (x,y,z,r) is the target point in Joint coordinate system
+        //% block="MOVL ANGLE"
         MOVL_ANGLE, // MOVL mode, (x,y,z,r) is the target point in Joint coordinate system
+        //% block="MOVJ INC"
         MOVJ_INC, // MOVJ mode, (x,y,z,r) is the angle increment in Joint coordinate system
+        //% block="MOVL INC"
         MOVL_INC, // MOVL mode, (x,y,z,r) is the Cartesian coordinate increment in Joint coordinate system
+        //% block="MOVJ XYZ INC"
         MOVJ_XYZ_INC, // MOVJ mode, (x,y,z,r) is the Cartesian coordinate increment in Cartesian coordinate system
+        //% block="JUMP MOVL XYZ"
         JUMP_MOVL_XYZ, // JUMP mode, (x,y,z,r) is the Cartesian coordinate increment in Cartesian coordinate system
     };
 
     //% weight=100
-    //% subcategory="Basic"
     //% group="Setup"
     //% block="Initialise DOBOT"
     //% color=#ffcc66
@@ -33,19 +42,14 @@ namespace mintspark_dobot {
     }
 
     //% weight=60
-    //% subcategory="Basic"
-    //% group="Move %mode to x %x y %y z %z r %r"
-    //% block="Initialise DOBOT"
+    //% group="Move"
+    //% block="Move %mode to x %x y %y z %z r %r"
     //% color=#ffcc66
+    //% inlineInputMode=inline
     export function moveArm(mode: PtpMode, x: number, y: number, z: number, r: number): void {
         sendMessage(createDobotPacket(84, 1, 0, CreatePTPPkt(mode, x, y, z, r)));
     }
 
-
-
-    input.onButtonPressed(Button.A, function () {
-        serial.writeBuffer(createDobotPacket(84, 1, 0, CreatePTPPkt(8, 0, 0, -5, 0)))
-    })
 
 
     // Communication functions
