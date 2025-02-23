@@ -99,25 +99,36 @@ namespace mintspark_dobot {
         sendMessage(createDobotPacket(cmd, 1, 0, buff));
     }
 
-    //% weight=75
+    ////% weight=75
+    ////% group="Setup"
+    ////% block="Set joint speed %speed accel %acceleration"
+    ////% color=#ffcc66
+    ////% inlineInputMode=inline
+    //export function setPtpJointSpeedAndAcceleration(speed: number, acceleration: number): void {
+    //    let buff = pins.createBuffer(32);
+    //    bufferSetFloatArray(buff, 0, [speed, speed, speed, speed, acceleration, acceleration, acceleration, acceleration]);
+    //    sendMessage(createDobotPacket(80, 1, 0, buff));
+    //}
+
+    ////% weight=74
+    ////% group="Setup"
+    ////% block="Set linear speed %linearSpeed accel %linearAcceleration effector speed %effectorSpeed accel %effectorAcceleration"
+    ////% color=#ffcc66
+    //export function setPtpLinearSpeedAndAcceleration(linearSpeed: number, linearAcceleration: number, effectorSpeed: number, effectorAcceleration: number): void {
+    //    let buff = pins.createBuffer(16);
+    //    bufferSetFloatArray(buff, 0, [linearSpeed, effectorSpeed, linearAcceleration, effectorAcceleration]);
+    //    sendMessage(createDobotPacket(81, 1, 0, buff));
+    //}
+
+    //% weight=72
     //% group="Setup"
-    //% block="Set PTP Joint speed %speed accel %acceleration"
+    //% block="Set PTP speed %speed accel %acceleration"
     //% color=#ffcc66
     //% inlineInputMode=inline
-    export function setPtpJointSpeedAndAcceleration(speed: number, acceleration: number): void {
-        let buff = pins.createBuffer(32);
-        bufferSetFloatArray(buff, 0, [speed, speed, speed, speed, acceleration, acceleration, acceleration, acceleration]);
-        sendMessage(createDobotPacket(80, 1, 0, buff));
-    }
-
-    //% weight=74
-    //% group="Setup"
-    //% block="Set PTP Cartesian speed %linearSpeed accel %linearAcceleration effector speed %effectorSpeed accel %effectorAcceleration"
-    //% color=#ffcc66
-    export function setPtpCartesianSpeedAndAcceleration(linearSpeed: number, effectorSpeed: number, linearAcceleration: number, effectorAcceleration: number): void {
-        let buff = pins.createBuffer(16);
-        bufferSetFloatArray(buff, 0, [linearSpeed, effectorSpeed, linearAcceleration, effectorAcceleration]);
-        sendMessage(createDobotPacket(81, 1, 0, buff));
+    export function setPtpSpeedAndAcceleration(speed: number, acceleration: number): void {
+        let buff = pins.createBuffer(8);
+        bufferSetFloatArray(buff, 0, [speed, acceleration]);
+        sendMessage(createDobotPacket(83, 1, 0, buff));
     }
 
     //% weight=70
