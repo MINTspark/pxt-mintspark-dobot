@@ -2,6 +2,19 @@
 //% subcategories='["Basic", "Advanced", "AI"]'
 //% groups='["Setup", "Move", "Work"]'
 namespace mintspark_dobot {
+    enum PtpMode {
+        JUMP_XYZ, // JUMP mode, (x,y,z,r) is the target point in Cartesian coordinate system
+        MOVJ_XYZ, // MOVJ mode, (x,y,z,r) is the target point in Cartesian coordinate system
+        MOVL_XYZ, //MOVL mode, (x,y,z,r) is the target point in Cartesian coordinate system
+        JUMP_ANGLE, // JUMP mode, (x,y,z,r) is the target point in Joint coordinate system
+        MOVJ_ANGLE, // MOVJ mode, (x,y,z,r) is the target point in Joint coordinate system
+        MOVL_ANGLE, // MOVL mode, (x,y,z,r) is the target point in Joint coordinate system
+        MOVJ_INC, // MOVJ mode, (x,y,z,r) is the angle increment in Joint coordinate system
+        MOVL_INC, // MOVL mode, (x,y,z,r) is the Cartesian coordinate increment in Joint coordinate system
+        MOVJ_XYZ_INC, // MOVJ mode, (x,y,z,r) is the Cartesian coordinate increment in Cartesian coordinate system
+        JUMP_MOVL_XYZ, // JUMP mode, (x,y,z,r) is the Cartesian coordinate increment in Cartesian coordinate system
+    };
+
     //% weight=100
     //% subcategory="Basic"
     //% group="Setup"
@@ -19,6 +32,15 @@ namespace mintspark_dobot {
         basic.showIcon(IconNames.Happy);
     }
 
+    //% weight=60
+    //% subcategory="Basic"
+    //% group="Move %mode to x %x y %y z %z r %r"
+    //% block="Initialise DOBOT"
+    //% color=#ffcc66
+    export function moveArm(mode: PtpMode, x: number, y: number, z: number, r: number): void {
+        sendMessage(createDobotPacket(84, 1, 0, CreatePTPPkt(mode, x, y, z, r)));
+    }
+
 
 
     input.onButtonPressed(Button.A, function () {
@@ -27,6 +49,11 @@ namespace mintspark_dobot {
 
 
     // Communication functions
+
+    function sendMessage(buffer: Buffer) : void
+    {
+        serial.writeBuffer(buffer);
+    }
 
     // Calculate Two's Complement for checksum
     function two_complement(x: number) {
@@ -69,5 +96,3 @@ namespace mintspark_dobot {
         return buff;
     }
 }
-
-
