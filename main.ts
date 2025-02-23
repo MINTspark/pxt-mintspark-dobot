@@ -41,6 +41,24 @@ namespace mintspark_dobot {
         basic.showIcon(IconNames.Happy);
     }
 
+    //% weight=95
+    //% group="Setup"
+    //% block="Clear Alarm"
+    //% color=#ffcc66
+    export function clearAlarm(): void {
+        sendMessage(createDobotPacket(20, 1, 0, pins.createBuffer(0)));
+    }
+
+    //% weight=90
+    //% group="Setup"
+    //% block="Start Homing"
+    //% color=#ffcc66
+    export function startHome(): void {
+        let buff = pins.createBuffer(4);
+        buff.fill(0);
+        sendMessage(createDobotPacket(31, 1, 0, buff));
+    }
+
     //% weight=60
     //% group="Move"
     //% block="Move %mode to x %x y %y z %z r %r"
@@ -49,8 +67,6 @@ namespace mintspark_dobot {
     export function moveArm(mode: PtpMode, x: number, y: number, z: number, r: number): void {
         sendMessage(createDobotPacket(84, 1, 0, CreatePTPPkt(mode, x, y, z, r)));
     }
-
-
 
     // Communication functions
 
