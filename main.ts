@@ -140,6 +140,47 @@ namespace mintspark_dobot {
         sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(mode, x, y, z, r)));
     }
 
+    //% weight=70
+    //% group="Move"
+    //% block="Stop Immediate"
+    //% color=#ffcc66
+    export function stopCommand():void{
+        sendMessage(createDobotPacket(242, 1, 0, pins.createBuffer(0)));
+    }
+
+    export enum GripperState{
+        Open = 0,
+        Closed = 1
+    }
+
+    export enum PumpState {
+        Off = 0,
+        On = 1
+    }
+
+
+    //% weight=30
+    //% group="Effector"
+    //% block="Set pump %pumpState suction cup %gripperState"
+    //% color=#ffcc66
+    export function setSuctionCup(pumpState: PumpState, suckerState: GripperState): void {
+        let buff = pins.createBuffer(2);
+        buff.setNumber(NumberFormat.UInt8LE, 0, pumpState)
+        buff.setNumber(NumberFormat.UInt8LE, 1, suckerState)
+        sendMessage(createDobotPacket(62, 1, 0, buff));
+    }
+
+    //% weight=29
+    //% group="Effector"
+    //% block="Set pump %pumpState Gripper %gripperState"
+    //% color=#ffcc66
+    export function setGripper(pumpState: PumpState, gripperState: GripperState): void {
+        let buff = pins.createBuffer(2);
+        buff.setNumber(NumberFormat.UInt8LE, 0, pumpState)
+        buff.setNumber(NumberFormat.UInt8LE, 1, gripperState)
+        sendMessage(createDobotPacket(63, 1, 0, buff));
+    }
+
     // Communication functions
 
     // Send message over serial
