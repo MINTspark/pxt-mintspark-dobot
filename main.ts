@@ -91,6 +91,7 @@ namespace mintspark_dobot {
     //% group="Setup"
     //% block="Set Jog %mode speed %speed accel %acceleration"
     //% color=#ffcc66
+    //% inlineInputMode=inline
     export function setJogSpeedAndAcceleration(system: CoordinateSystem, speed: number, acceleration: number): void {
         let cmd = system == CoordinateSystem.Joint ? 70 : 71;
         let buff = pins.createBuffer(32);
@@ -102,6 +103,7 @@ namespace mintspark_dobot {
     //% group="Setup"
     //% block="Set PTP Joint speed %speed accel %acceleration"
     //% color=#ffcc66
+    //% inlineInputMode=inline
     export function setPtpJointSpeedAndAcceleration(speed: number, acceleration: number): void {
         let buff = pins.createBuffer(32);
         bufferSetFloatArray(buff, 0, [speed, speed, speed, speed, acceleration, acceleration, acceleration, acceleration]);
@@ -110,7 +112,7 @@ namespace mintspark_dobot {
 
     //% weight=74
     //% group="Setup"
-    //% block="Set PTP Cartesian speed %speed accel %acceleration"
+    //% block="Set PTP Cartesian speed %linearSpeed accel %linearAcceleration effector speed %effectorSpeed accel %effectorAcceleration"
     //% color=#ffcc66
     export function setPtpCartesianSpeedAndAcceleration(linearSpeed: number, effectorSpeed: number, linearAcceleration: number, effectorAcceleration: number): void {
         let buff = pins.createBuffer(16);
@@ -122,6 +124,7 @@ namespace mintspark_dobot {
     //% group="Setup"
     //% block="Set PTP Jump height %height z-limit %zLimit"
     //% color=#ffcc66
+    //% inlineInputMode=inline
     export function setPtpJumpParameters(height: number, zLimit: number): void {
         let buff = pins.createBuffer(8);
         bufferSetFloatArray(buff, 0, [height, zLimit]);
