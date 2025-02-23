@@ -44,6 +44,15 @@ namespace mintspark_dobot {
         Joint = 1
     }
 
+    export enum PtpMoveMode {
+        //% block="Jump"
+        Jump = 0,
+        //% block="Joint"
+        Joint = 1,
+        //% block="Linear"
+        Linear = 2  
+    }
+
     //% weight=100
     //% group="Setup"
     //% block="Initialise DOBOT"
@@ -133,11 +142,62 @@ namespace mintspark_dobot {
 
     //% weight=40
     //% group="Move"
-    //% block="Move PTP %mode to x %x y %y z %z r %r"
+    //% block="Move Cartesian mode %mode to x %x y %y z %z r %r"
     //% color=#ffcc66
     //% inlineInputMode=inline
-    export function movePtp(mode: PtpMode, x: number, y: number, z: number, r: number): void {
-        sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(mode, x, y, z, r)));
+    export function movePtpCartesian(mode: PtpMoveMode, x: number, y: number, z: number, r: number): void {
+        let ptpMode: PtpMode;
+        switch (mode) {
+            case PtpMoveMode.Jump:
+                ptpMode = PtpMode.JUMP_XYZ;
+                break;
+            case PtpMoveMode.Joint:
+                ptpMode = PtpMode.MOVJ_XYZ;
+                break;
+            default:
+                ptpMode = PtpMode.MOVL_XYZ;
+        }
+
+        sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(ptpMode, x, y, z, r)));
+    }
+
+    //% weight=38
+    //% group="Move"
+    //% block="Move Joint mode %mode to J1 %j1 J2 %j2 J3 %j3 J4 %j4"
+    //% color=#ffcc66
+    //% inlineInputMode=inline
+    export function movePtpJoint(mode: PtpMoveMode, j1: number, j2: number, j3: number, j4: number): void {
+        let ptpMode: PtpMode;
+        switch (mode) {
+            case PtpMoveMode.Jump:
+                ptpMode = PtpMode.JUMP_ANGLE;
+                break;
+            case PtpMoveMode.Joint:
+                ptpMode = PtpMode.MOVJ_ANGLE;
+                break;
+            default:
+                ptpMode = PtpMode.MOVL_ANGLE;
+        }
+
+        sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(ptpMode, j1, j2, j3, j4)));
+    }
+
+    //% weight=36
+    //% group="Move"
+    //% block="Move Cartesian Increment x %x y %y z %z r %r"
+    //% color=#ffcc66
+    //% inlineInputMode=inline
+    export function movePtpCartesianIncrement(x: number, y: number, z: number, r: number): void {
+        sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(PtpMode.MOVJ_XYZ_INC, x, y, z, r)));
+    }
+
+    //% weight=34
+    //% group="Move"
+    //% block="Move Joint Increment J1 %j1 J2 %j2 J3 %j3 J4 %j4"
+    //% color=#ffcc66
+    //% inlineInputMode=inline
+    export function movePtpJointIncrement(j1: number, j2: number, j3: number, j4: number): void {
+        sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(PtpMode.MOVJ_INC, j1, j2, j3, j4)));
     }
 
     //% weight=70
