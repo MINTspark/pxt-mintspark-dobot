@@ -59,13 +59,66 @@ namespace mintspark_dobot {
         sendMessage(createDobotPacket(31, 1, 0, buff));
     }
 
+    export enum CoordinateSystem{
+        //% block="Joint"
+        Joint,
+        //% block="Cartesian"
+        Cartesian
+    }
+
+
+
+    //% weight=80
+    //% group="Setup"
+    //% block="Set Jog %mode speed %speed accel %acceleration"
+    //% color=#ffcc66
+    export function setJogSpeedAndAcceleration(system: CoordinateSystem, speed: number, acceleration: number): void {
+        let cmd = system == CoordinateSystem.Joint ? 70 : 71;
+        let buff = pins.createBuffer(32);
+        bufferSetFloatArray(buff, 0, [speed, speed, speed, speed, acceleration, acceleration, acceleration, acceleration]);
+        sendMessage(createDobotPacket(cmd, 1, 0, buff));
+    }
+
+    //% weight=75
+    //% group="Setup"
+    //% block="Set PTP Joint speed %speed accel %acceleration"
+    //% color=#ffcc66
+    export function setPtpJointSpeedAndAcceleration(speed: number, acceleration: number): void {
+        let buff = pins.createBuffer(32);
+        bufferSetFloatArray(buff, 0, [speed, speed, speed, speed, acceleration, acceleration, acceleration, acceleration]);
+        sendMessage(createDobotPacket(80, 1, 0, buff));
+    }
+
+    //% weight=74
+    //% group="Setup"
+    //% block="Set PTP Cartesian speed %speed accel %acceleration"
+    //% color=#ffcc66
+    export function setPtpCartesianSpeedAndAcceleration(linearSpeed: number, effectorSpeed: number, linearAcceleration: number, effectorAcceleration: number): void {
+        let buff = pins.createBuffer(16);
+        bufferSetFloatArray(buff, 0, [linearSpeed, effectorSpeed, linearAcceleration, effectorAcceleration]);
+        sendMessage(createDobotPacket(81, 1, 0, buff));
+    }
+
+    //% weight=70
+    //% group="Setup"
+    //% block="Set PTP Jump height %height z-limit %zLimit"
+    //% color=#ffcc66
+    export function setPtpJumpParameters(height: number, zLimit: number): void {
+        let buff = pins.createBuffer(8);
+        bufferSetFloatArray(buff, 0, [height, zLimit]);
+        sendMessage(createDobotPacket(82, 1, 0, buff));
+    }
+
+
+
+
     //% weight=60
     //% group="Move"
     //% block="Move %mode to x %x y %y z %z r %r"
     //% color=#ffcc66
     //% inlineInputMode=inline
     export function moveArm(mode: PtpMode, x: number, y: number, z: number, r: number): void {
-        sendMessage(createDobotPacket(84, 1, 0, CreatePTPPkt(mode, x, y, z, r)));
+        sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(mode, x, y, z, r)));
     }
 
     // Communication functions
@@ -105,8 +158,8 @@ namespace mintspark_dobot {
         return dobotPackageBuffer
     }
 
-    // Create X,Y,Z,R Packet
-    function CreatePTPPkt(cmdtype: number, x: number, y: number, z: number, r: number): Buffer {
+    // Create point to point X,Y,Z,R Payload
+    function CreatePtpPayload(cmdtype: number, x: number, y: number, z: number, r: number): Buffer {
         let buff = pins.createBuffer(17);
         buff.setNumber(NumberFormat.UInt8LE, 0, cmdtype);
         buff.setNumber(NumberFormat.Float32LE, 1, x);
@@ -114,5 +167,14 @@ namespace mintspark_dobot {
         buff.setNumber(NumberFormat.Float32LE, 9, z);
         buff.setNumber(NumberFormat.Float32LE, 13, r);
         return buff;
+    }
+
+    // Set array of numbers as 4 byte little endian foat values in buffer
+    function bufferSetFloatArray(buffer: Buffer, offset: number, numbers: number[]) {
+        let counter = 0;
+        for (let n of numbers) {
+            buffer.setNumber(NumberFormat.Float32LE, offset + counter * 4, n);
+            counter++;
+        }
     }
 }
