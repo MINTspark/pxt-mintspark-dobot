@@ -320,7 +320,7 @@ namespace mintspark_dobot {
                 ptpMode = PtpMode.MOVL_XYZ;
         }
 
-        sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(ptpMode, x, y, z, r)));
+        sendMessage(createDobotPacket(84, 1, 1, CreatePtpPayload(ptpMode, x, y, z, r)));
     }
 
     //% weight=42
@@ -362,7 +362,7 @@ namespace mintspark_dobot {
                 ptpMode = PtpMode.MOVL_ANGLE;
         }
 
-        sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(ptpMode, j1, j2, j3, j4)));
+        sendMessage(createDobotPacket(84, 1, 1, CreatePtpPayload(ptpMode, j1, j2, j3, j4)));
     }
 
     //% weight=36
@@ -399,7 +399,7 @@ namespace mintspark_dobot {
         let buff = pins.createBuffer(2);
         buff.setNumber(NumberFormat.UInt8LE, 0, 1)
         buff.setNumber(NumberFormat.UInt8LE, 1, suckerState)
-        sendMessage(createDobotPacket(63, 1, 0, buff));
+        sendMessage(createDobotPacket(63, 1, 1, buff));
     }
 
     //% weight=25
@@ -410,7 +410,7 @@ namespace mintspark_dobot {
         let buff = pins.createBuffer(2);
         buff.setNumber(NumberFormat.UInt8LE, 0, 0)
         buff.setNumber(NumberFormat.UInt8LE, 1, 0)
-        sendMessage(createDobotPacket(63, 1, 0, buff));
+        sendMessage(createDobotPacket(63, 1, 1, buff));
     }
 
     //% weight=29
@@ -421,7 +421,7 @@ namespace mintspark_dobot {
         let buff = pins.createBuffer(2);
         buff.setNumber(NumberFormat.UInt8LE, 0, 1)
         buff.setNumber(NumberFormat.UInt8LE, 1, gripperState)
-        sendMessage(createDobotPacket(63, 1, 0, buff));
+        sendMessage(createDobotPacket(63, 1, 1, buff));
     }
 
     let remoteControlActive = false;
