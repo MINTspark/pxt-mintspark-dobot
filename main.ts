@@ -7,6 +7,7 @@ namespace mintspark_dobot {
     // TODO:
     // Add protection for joint jogging
     // Have separate functions for jogging cartesian and joint
+    // Set boundaries for safety
 
   
     class CartesianPosition{
@@ -123,8 +124,8 @@ namespace mintspark_dobot {
     let xPlusLimit = 240;
     let yMinusLimit = -180;
     let yPlusLimit = 180;
-    let rMinusLimit = 0;
-    let rPlusLimit = 0;
+    let rMinusLimit = -130;
+    let rPlusLimit = 130;
     let j1MinusLimit = 0;
     let j1PlusLimit = 0;
     let j2MinusLimit = 0;
@@ -147,12 +148,30 @@ namespace mintspark_dobot {
     //% weight=105
     ////% subcategory="Advanced"
     //% group="Setup"
+    //% block="Set cartesian soft limits|X+: %xPlus X-: %xMinus Y+: %yPlus Y-: %yMinus Z+: %zPlus Z-: %zMinus R+: %rPlus R-: %rMinus"
+    //% color=#1e90ff
+    //% inlineInputMode=external
+    export function setCartesianSoftLimits(xPlus: number, xMinus: number, yPlus: number, yMinus: number, zPlus: number, zMinus: number, rPlus: number, rMinus: number, ): void {
+        xPlusLimit = xPlus;
+        xMinusLimit = xMinus;
+        yPlusLimit = yPlus;
+        yMinusLimit = yMinus;
+        zPlusLimit = zPlus;
+        zMinusLimit = zMinus;
+        rPlusLimit = rPlus;
+        rMinusLimit = rMinus;
+    }
+
+    //% weight=103
+    ////% subcategory="Advanced"
+    //% group="Setup"
     //% block="Set fixed Position %index|x %x y %y z %z r %r"
     //% color=#1e90ff
     //% inlineInputMode=external
     export function setFixedPosition(index: number, x: number, y: number, z: number, r: number): void {
         fixedCartesianPositions[index] = new CartesianPosition(x, y, z, r);
     }
+
 
     //% weight=120
     //% group="Setup"
