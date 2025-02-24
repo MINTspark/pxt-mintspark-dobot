@@ -228,8 +228,9 @@ namespace mintspark_dobot {
     //% inlineInputMode=inline
     export function moveJog(system: CoordinateSystem, jogComand: JogCommand): void {
         if (system == CoordinateSystem.Cartesian && ProtectCartesianJogCommand(jogComand))
-        {
-            return;
+        {   
+            jogComand = JogCommand.IDEL;
+            music.play(music.tonePlayable(Note.C, music.beat(BeatFraction.Eighth)), music.PlaybackMode.InBackground)
         }
 
         let buff = pins.createBuffer(2);
