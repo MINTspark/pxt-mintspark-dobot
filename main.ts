@@ -70,15 +70,15 @@ namespace mintspark_dobot {
     };
 
     export enum JogCommand {
-        IDEL, //Void
-        AP_DOWN, // X+/Joint1+
-        AN_DOWN, // X-/Joint1-
-        BP_DOWN, // Y+/Joint2+
-        BN_DOWN, // Y-/Joint2-
-        CP_DOWN, // Z+/Joint3+
-        CN_DOWN, // Z-/Joint3-
-        DP_DOWN, // R+/Joint4+
-        DN_DOWN // R-/Joint4-
+        IDEL = 0, //Void
+        AP_DOWN = 1, // X+/Joint1+
+        AN_DOWN = 2, // X-/Joint1-
+        BP_DOWN = 3, // Y+/Joint2+
+        BN_DOWN = 4, // Y-/Joint2-
+        CP_DOWN = 5, // Z+/Joint3+
+        CN_DOWN = 6, // Z-/Joint3-
+        DP_DOWN = 7, // R+/Joint4+
+        DN_DOWN = 8 // R-/Joint4-
     };
 
     export enum CoordinateSystem {
@@ -135,7 +135,6 @@ namespace mintspark_dobot {
     let j4PlusLimit = 0;
 
     //% weight=110
-    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Set Startposition to|x %x y %y z %z r %r"
     //% color=#1e90ff
@@ -146,7 +145,7 @@ namespace mintspark_dobot {
     } 
 
     //% weight=105
-    //% subcategory="Advanced"
+    ////% subcategory="Advanced"
     //% group="Setup"
     //% block="Set fixed Position %index|x %x y %y z %z r %r"
     //% color=#1e90ff
@@ -156,7 +155,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=120
-    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Current Cartesian Position"
     //% color=#1e90ff
@@ -165,7 +163,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=118
-    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Current Joint Position"
     //% color=#1e90ff
@@ -194,7 +191,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=80
-    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Set Jog %mode speed %speed accel %acceleration"
     //% color=#1e90ff
@@ -230,7 +226,6 @@ namespace mintspark_dobot {
     //}
 
     //% weight=72
-    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Set PTP speed %speed accel %acceleration"
     //% color=#1e90ff
@@ -273,7 +268,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=40
-    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move Cartesian mode %mode to x %x y %y z %z r %r"
     //% color=#1e90ff
@@ -295,7 +289,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=42
-    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move to Startposition mode %mode"
     //% color=#1e90ff
@@ -317,7 +310,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=38
-    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move Joint mode %mode to J1 %j1 J2 %j2 J3 %j3 J4 %j4"
     //% color=#1e90ff
@@ -339,7 +331,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=36
-    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move Cartesian Increment x %x y %y z %z r %r"
     //% color=#1e90ff
@@ -349,7 +340,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=34
-    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move Joint Increment J1 %j1 J2 %j2 J3 %j3 J4 %j4"
     //% color=#1e90ff
@@ -359,7 +349,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=70
-    //% subcategory="Advanced"
     //% group="Move"
     //% block="Stop Immediate"
     //% color=#1e90ff
@@ -368,7 +357,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=30
-    //% subcategory="Advanced"
     //% group="Effector"
     //% block="Set suction cup %suckerState"
     //% color=#1e90ff
@@ -380,7 +368,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=25
-    //% subcategory="Advanced"
     //% group="Effector"
     //% block="Set pump OFF"
     //% color=#1e90ff
@@ -392,7 +379,6 @@ namespace mintspark_dobot {
     }
 
     //% weight=29
-    //% subcategory="Advanced"
     //% group="Effector"
     //% block="Set Gripper %gripperState"
     //% color=#1e90ff
