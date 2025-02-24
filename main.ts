@@ -101,6 +101,23 @@ namespace mintspark_dobot {
     let currentPositionCartesian: CartesianPosition;
     let currentPositionJoint: JointPosition;
 
+    let zMinusLimit = -43;
+    let zPlusLimit = 35;
+    let xMinusLimit = 160;
+    let xPlusLimit = 240;
+    let yMinusLimit = -180;
+    let yPlusLimit = 180;
+    let rMinusLimit = 0;
+    let rPlusLimit = 0;
+    let j1MinusLimit = 0;
+    let j1PlusLimit = 0;
+    let j2MinusLimit = 0;
+    let j2PlusLimit = 0;
+    let j3MinusLimit = 0;
+    let j3PlusLimit = 0;
+    let j4MinusLimit = 0;
+    let j4PlusLimit = 0;
+
     //% weight=110
     //% subcategory="Advanced"
     //% group="Setup"
@@ -209,6 +226,11 @@ namespace mintspark_dobot {
     //% color=#1e90ff
     //% inlineInputMode=inline
     export function moveJog(system: CoordinateSystem, jogComand: JogCommand): void {
+        if (system == CoordinateSystem.Cartesian && ProtectCartesianJogCommand(jogComand))
+        {
+            return;
+        }
+
         let buff = pins.createBuffer(2);
         buff.setNumber(NumberFormat.UInt8LE, 0, system)
         buff.setNumber(NumberFormat.UInt8LE, 1, jogComand)
@@ -373,10 +395,6 @@ namespace mintspark_dobot {
     //% color=#1e90ff
     export function stopRemoteControl(): void {
         remoteControlActive = false;
-        basic.showNumber(currentPositionCartesian.X);
-        basic.showNumber(currentPositionCartesian.Y);
-        basic.showNumber(currentPositionCartesian.Z);
-        basic.showNumber(currentPositionCartesian.R);
     }
 
     function requestPosition(){
@@ -445,6 +463,7 @@ namespace mintspark_dobot {
 
                     switch(cmd)
                     {
+                        // Update current position
                         case 10:
                             setCurrentPositionFromBuffer(buff.slice(i + 5, 32));
                         break;
@@ -454,10 +473,11 @@ namespace mintspark_dobot {
             }
             
             requestPosition();
-            basic.pause(50);
+            basic.pause(100);
         }
     });
 
+    // Get current position info from buffer data
     function setCurrentPositionFromBuffer(buffer : Buffer)
     {
         let x = buffer.getNumber(NumberFormat.Float32LE, 0);
@@ -472,6 +492,50 @@ namespace mintspark_dobot {
 
         currentPositionCartesian = new CartesianPosition(x, y, z, r);
         currentPositionJoint = new JointPosition(j1, j2, j3, j4);
+    }
+
+    function ProtectCartesianJogCommand(command: JogCommand) : boolean
+    {
+        let pose = currentPositionCartesian;
+        let restrict = false;
+
+        // Check Z-
+        if (pose.Z < zMinusLimit && command == JogCommand.CN_DOWN)
+        {
+            restrict = true;
+        }
+
+        // Z+
+        if (pose.Z > zPlusLimit && command == JogCommand.CP_DOWN)
+        {
+            restrict = true;
+        }
+
+        // Check X-
+        if (pose.X < xMinusLimit && command == JogCommand.AN_DOWN)
+        {
+            restrict = true;
+        }
+
+        // X+
+        if (pose.X > xPlusLimit && command == JogCommand.AP_DOWN)
+        {
+            restrict = true;
+        }
+
+        // Check Y-
+        if (pose.Y < yMinusLimit && command == JogCommand.BN_DOWN)
+        {
+            restrict = true;
+        }
+
+        // Y-
+        if (pose.Y > yPlusLimit && command == JogCommand.BP_DOWN)
+        {
+            restrict = true;
+        }
+    
+        return restrict;
     }
 
     // Send message over serial
