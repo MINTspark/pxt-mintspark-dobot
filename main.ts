@@ -136,6 +136,14 @@ namespace mintspark_dobot {
     let j4MinusLimit = 0;
     let j4PlusLimit = 0;
 
+    //% weight=140
+    //% group="Setup"
+    //% block="Initialise DOBOT"
+    //% color=#1e90ff
+    export function initialiseDobot(): void {
+        requestPosition();
+    }
+
     //% weight=110
     //% group="Setup"
     //% block="Set Startposition to|x %x y %y z %z r %r"
@@ -495,7 +503,7 @@ namespace mintspark_dobot {
             SerialPin.P8,
             BaudRate.BaudRate115200
         )
-        requestPosition();
+
         basic.pause(50);
         basic.showIcon(IconNames.Happy); 
     }
