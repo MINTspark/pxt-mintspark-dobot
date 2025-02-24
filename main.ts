@@ -211,7 +211,7 @@ namespace mintspark_dobot {
     //% block="Clear Alarm"
     //% color=#1e90ff
     export function clearAlarm(): void {
-        sendMessage(createDobotPacket(20, 1, 0, pins.createBuffer(0)));
+        sendMessage(createDobotPacket(21, 1, 0, pins.createBuffer(0)));
     }
 
     //% weight=90
