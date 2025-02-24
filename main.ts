@@ -2,6 +2,13 @@
 //% subcategories='["Basic", "Advanced", "AI"]'
 //% groups='["Setup", "Move", "Remote"]'
 namespace mintspark_dobot {
+
+
+    // TODO:
+    // Add protection for joint jogging
+    // Have separate functions for jogging cartesian and joint
+
+  
     class CartesianPosition{
         X: number;
         Y: number;
@@ -14,6 +21,10 @@ namespace mintspark_dobot {
             this.Y = y;
             this.Z = z;
             this.R = r;
+        }
+
+        toString():string{
+            return "x:" + this.X + " y:" + this.Y + " z:" + this.Z + " r:" + this.R;
         }
     }
 
@@ -28,6 +39,10 @@ namespace mintspark_dobot {
             this.J2 = j2;
             this.J3 = j3;
             this.J4 = j4;
+        }
+
+        toString(): string {
+            return "J1:" + this.J1 + " J2:" + this.J2 + " J3:" + this.J3 + " J4:" + this.J4;
         }
     }
     
@@ -138,6 +153,24 @@ namespace mintspark_dobot {
     //% inlineInputMode=external
     export function setFixedPosition(index: number, x: number, y: number, z: number, r: number): void {
         fixedCartesianPositions[index] = new CartesianPosition(x, y, z, r);
+    }
+
+    //% weight=120
+    //% subcategory="Advanced"
+    //% group="Setup"
+    //% block="Current Cartesian Position"
+    //% color=#1e90ff
+    export function getCurrentPositionCartesian(): string {
+        return currentPositionCartesian.toString();
+    }
+
+    //% weight=118
+    //% subcategory="Advanced"
+    //% group="Setup"
+    //% block="Current Joint Position"
+    //% color=#1e90ff
+    export function getCurrentPositionJoint(): string {
+        return currentPositionJoint.toString();
     }
 
     //% weight=95
