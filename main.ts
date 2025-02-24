@@ -447,7 +447,7 @@ namespace mintspark_dobot {
 
     // When radio value is received
     radio.onReceivedValue(function (name: string, value: number) {
-        if (!remoteControlActive) return;
+        if (!remoteControlActive || name==null || value==null) return;
 
         switch(name)
         {
