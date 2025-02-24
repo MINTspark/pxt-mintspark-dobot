@@ -107,10 +107,10 @@ namespace mintspark_dobot {
     }
 
     export enum SuctionCupState {
-        //% block="Suck"
-        Suck = 1,
         //% block="Blow"
-        Blow = 0
+        Blow = 0,
+        //% block="Suck"
+        Suck = 1
     }
 
     let fixedCartesianPositions: CartesianPosition[] = [];
@@ -396,10 +396,8 @@ namespace mintspark_dobot {
     //% block="Set suction cup %suckerState"
     //% color=#1e90ff
     export function setSuctionCup(suckerState: SuctionCupState): void {
-        let buff = pins.createBuffer(2);
-        buff.setNumber(NumberFormat.UInt8LE, 0, 1)
-        buff.setNumber(NumberFormat.UInt8LE, 1, suckerState)
-        sendMessage(createDobotPacket(63, 1, 1, buff));
+        let gripperState = suckerState == SuctionCupState.Suck ? GripperState.Closed : GripperState.Open;
+        setGripper(gripperState);
     }
 
     //% weight=25
