@@ -179,7 +179,11 @@ namespace mintspark_dobot {
     //% block="Current Cartesian Position"
     //% color=#1e90ff
     export function getCurrentPositionCartesian(): string {
-        return currentPositionCartesian.toString();
+        if (currentPositionCartesian != null)
+        {
+            return currentPositionCartesian.toString();
+        }
+        return "Unknown";
     }
 
     //% weight=118
@@ -187,7 +191,10 @@ namespace mintspark_dobot {
     //% block="Current Joint Position"
     //% color=#1e90ff
     export function getCurrentPositionJoint(): string {
-        return currentPositionJoint.toString();
+        if (currentPositionJoint != null) {
+            return currentPositionJoint.toString();
+        }
+        return "Unknown";
     }
 
     //% weight=95
@@ -488,6 +495,7 @@ namespace mintspark_dobot {
             SerialPin.P8,
             BaudRate.BaudRate115200
         )
+        requestPosition();
         basic.pause(50);
         basic.showIcon(IconNames.Happy); 
     }
