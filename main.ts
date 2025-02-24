@@ -30,6 +30,7 @@ namespace mintspark_dobot {
             this.J4 = j4;
         }
     }
+    
     export enum PtpMode {
         //% block="JUMP XYZ"
         JUMP_XYZ, // JUMP mode, (x,y,z,r) is the target point in Cartesian coordinate system
