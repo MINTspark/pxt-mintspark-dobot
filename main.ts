@@ -2,6 +2,20 @@
 //% subcategories='["Basic", "Advanced", "AI"]'
 //% groups='["Setup", "Move", "Work"]'
 namespace mintspark_dobot {
+    class CartesianPosition{
+        X: number;
+        Y: number;
+        Z: number;
+        R: number;
+
+        constructor(x: number, y: number, z: number, r: number)
+        {
+            this.X=x;
+            this.Y = y;
+            this.Z = z;
+            this.R = r;
+        }
+    }
     export enum PtpMode {
         //% block="JUMP XYZ"
         JUMP_XYZ, // JUMP mode, (x,y,z,r) is the target point in Cartesian coordinate system
@@ -67,7 +81,39 @@ namespace mintspark_dobot {
         Blow = 0
     }
 
+    let fixedCartesianPositions: CartesianPosition[] = [];
     let isInitialised = false;
+    let startPosition: CartesianPosition = new CartesianPosition(210, 0, 80, 10);
+
+    //% weight=95
+    //% subcategory="Advanced"
+    //% group="Move"
+    //% block="Set Startposition to|x %x y %y z %z r %r"
+    //% color=#1e90ff
+    //% inlineInputMode=external
+    export function setStartPosition(x: number, y: number, z: number, r: number): void {
+        startPosition = new CartesianPosition(x, y, z, r);
+        movePtpJoint(PtpMoveMode.Joint, 0, 20, 30, 0);
+    } 
+
+    //% weight=95
+    //% subcategory="Advanced"
+    //% group="Move"
+    //% block="Set fixed Position %index|x %x y %y z %z r %r"
+    //% color=#1e90ff
+    //% inlineInputMode=external
+    export function setFixedPosition(index: number, x: number, y: number, z: number, r: number): void {
+        fixedCartesianPositions[index] = new CartesianPosition(x, y, z, r);
+    }
+
+    //% weight=95
+    //% subcategory="Advanced"
+    //% group="Move"
+    //% block="Set Startposition %position"
+    //% color=#1e90ff
+    export function moveToPosition(): void {
+        movePtpCartesian(PtpMoveMode.Joint, startPosition.X, startPosition.Y, 30, 0);
+    }
 
     //% weight=95
     //% subcategory="Advanced"
