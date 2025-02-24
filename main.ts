@@ -7,7 +7,8 @@ namespace mintspark_dobot {
     // TODO:
     // Add protection for joint jogging
     // Have separate functions for jogging cartesian and joint
-    // Set boundaries for safety
+    // Set joint boundaries for safety, add cartesian R soft boundary
+    // Add Alert message checking
 
   
     class CartesianPosition{
