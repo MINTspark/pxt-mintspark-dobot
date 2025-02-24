@@ -53,34 +53,36 @@ namespace mintspark_dobot {
         Linear = 2  
     }
 
-    //% weight=100
-    //% group="Setup"
-    //% block="Initialise DOBOT"
-    //% color=#ffcc66
-    export function initConnection(): void {
-        pins.setPull(1, PinPullMode.PullUp);
-        pins.setPull(8, PinPullMode.PullUp);
-        serial.redirect(
-            SerialPin.P1,
-            SerialPin.P8,
-            BaudRate.BaudRate115200
-        )
-        basic.pause(50);
-        basic.showIcon(IconNames.Happy);
+    export enum GripperState {
+        //% block="Open"
+        Open = 0,
+        //% block="Closed"
+        Closed = 1
     }
 
+    export enum SuctionCupState {
+        //% block="Suck"
+        Suck = 1,
+        //% block="Blow"
+        Blow = 0
+    }
+
+    let isInitialised = false;
+
     //% weight=95
+    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Clear Alarm"
-    //% color=#ffcc66
+    //% color=#1e90ff
     export function clearAlarm(): void {
         sendMessage(createDobotPacket(20, 1, 0, pins.createBuffer(0)));
     }
 
     //% weight=90
+    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Start Homing"
-    //% color=#ffcc66
+    //% color=#1e90ff
     export function startHome(): void {
         let buff = pins.createBuffer(4);
         buff.fill(0);
@@ -88,9 +90,10 @@ namespace mintspark_dobot {
     }
 
     //% weight=80
+    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Set Jog %mode speed %speed accel %acceleration"
-    //% color=#ffcc66
+    //% color=#1e90ff
     //% inlineInputMode=inline
     export function setJogSpeedAndAcceleration(system: CoordinateSystem, speed: number, acceleration: number): void {
         let cmd = system == CoordinateSystem.Joint ? 70 : 71;
@@ -100,9 +103,10 @@ namespace mintspark_dobot {
     }
 
     ////% weight=75
+    ////% subcategory="Advanced"
     ////% group="Setup"
     ////% block="Set joint speed %speed accel %acceleration"
-    ////% color=#ffcc66
+    ////% color=#1e90ff
     ////% inlineInputMode=inline
     //export function setPtpJointSpeedAndAcceleration(speed: number, acceleration: number): void {
     //    let buff = pins.createBuffer(32);
@@ -111,9 +115,10 @@ namespace mintspark_dobot {
     //}
 
     ////% weight=74
+    ////% subcategory="Advanced"
     ////% group="Setup"
     ////% block="Set linear speed %linearSpeed accel %linearAcceleration effector speed %effectorSpeed accel %effectorAcceleration"
-    ////% color=#ffcc66
+    ////% color=#1e90ff
     //export function setPtpLinearSpeedAndAcceleration(linearSpeed: number, linearAcceleration: number, effectorSpeed: number, effectorAcceleration: number): void {
     //    let buff = pins.createBuffer(16);
     //    bufferSetFloatArray(buff, 0, [linearSpeed, effectorSpeed, linearAcceleration, effectorAcceleration]);
@@ -121,9 +126,10 @@ namespace mintspark_dobot {
     //}
 
     //% weight=72
+    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Set PTP speed %speed accel %acceleration"
-    //% color=#ffcc66
+    //% color=#1e90ff
     //% inlineInputMode=inline
     export function setPtpSpeedAndAcceleration(speed: number, acceleration: number): void {
         let buff = pins.createBuffer(8);
@@ -132,9 +138,10 @@ namespace mintspark_dobot {
     }
 
     //% weight=70
+    //% subcategory="Advanced"
     //% group="Setup"
     //% block="Set PTP Jump height %height z-limit %zLimit"
-    //% color=#ffcc66
+    //% color=#1e90ff
     //% inlineInputMode=inline
     export function setPtpJumpParameters(height: number, zLimit: number): void {
         let buff = pins.createBuffer(8);
@@ -143,9 +150,10 @@ namespace mintspark_dobot {
     }
 
     //% weight=50
+    //% subcategory="Advanced"
     //% group="Move"
     //% block="Jog %system command %jogComand"
-    //% color=#ffcc66
+    //% color=#1e90ff
     //% inlineInputMode=inline
     export function moveJog(system: CoordinateSystem, jogComand: JogCommand): void {
         let buff = pins.createBuffer(2);
@@ -155,9 +163,10 @@ namespace mintspark_dobot {
     }
 
     //% weight=40
+    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move Cartesian mode %mode to x %x y %y z %z r %r"
-    //% color=#ffcc66
+    //% color=#1e90ff
     //% inlineInputMode=inline
     export function movePtpCartesian(mode: PtpMoveMode, x: number, y: number, z: number, r: number): void {
         let ptpMode: PtpMode;
@@ -176,9 +185,10 @@ namespace mintspark_dobot {
     }
 
     //% weight=38
+    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move Joint mode %mode to J1 %j1 J2 %j2 J3 %j3 J4 %j4"
-    //% color=#ffcc66
+    //% color=#1e90ff
     //% inlineInputMode=inline
     export function movePtpJoint(mode: PtpMoveMode, j1: number, j2: number, j3: number, j4: number): void {
         let ptpMode: PtpMode;
@@ -197,69 +207,92 @@ namespace mintspark_dobot {
     }
 
     //% weight=36
+    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move Cartesian Increment x %x y %y z %z r %r"
-    //% color=#ffcc66
+    //% color=#1e90ff
     //% inlineInputMode=inline
     export function movePtpCartesianIncrement(x: number, y: number, z: number, r: number): void {
         sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(PtpMode.MOVJ_XYZ_INC, x, y, z, r)));
     }
 
     //% weight=34
+    //% subcategory="Advanced"
     //% group="Move"
     //% block="Move Joint Increment J1 %j1 J2 %j2 J3 %j3 J4 %j4"
-    //% color=#ffcc66
+    //% color=#1e90ff
     //% inlineInputMode=inline
     export function movePtpJointIncrement(j1: number, j2: number, j3: number, j4: number): void {
         sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(PtpMode.MOVJ_INC, j1, j2, j3, j4)));
     }
 
     //% weight=70
+    //% subcategory="Advanced"
     //% group="Move"
     //% block="Stop Immediate"
-    //% color=#ffcc66
+    //% color=#1e90ff
     export function stopCommand():void{
         sendMessage(createDobotPacket(242, 1, 0, pins.createBuffer(0)));
     }
 
-    export enum GripperState{
-        Open = 0,
-        Closed = 1
-    }
-
-    export enum PumpState {
-        Off = 0,
-        On = 1
-    }
-
-
     //% weight=30
+    //% subcategory="Advanced"
     //% group="Effector"
-    //% block="Set pump %pumpState suction cup %gripperState"
-    //% color=#ffcc66
-    export function setSuctionCup(pumpState: PumpState, suckerState: GripperState): void {
+    //% block="Set suction cup %suckerState"
+    //% color=#1e90ff
+    export function setSuctionCup(suckerState: SuctionCupState): void {
         let buff = pins.createBuffer(2);
-        buff.setNumber(NumberFormat.UInt8LE, 0, pumpState)
+        buff.setNumber(NumberFormat.UInt8LE, 0, 1)
         buff.setNumber(NumberFormat.UInt8LE, 1, suckerState)
-        sendMessage(createDobotPacket(62, 1, 0, buff));
+        sendMessage(createDobotPacket(63, 1, 0, buff));
+    }
+
+    //% weight=25
+    //% subcategory="Advanced"
+    //% group="Effector"
+    //% block="Set pump OFF"
+    //% color=#1e90ff
+    export function setPumpOff(): void {
+        let buff = pins.createBuffer(2);
+        buff.setNumber(NumberFormat.UInt8LE, 0, 0)
+        buff.setNumber(NumberFormat.UInt8LE, 1, 0)
+        sendMessage(createDobotPacket(63, 1, 0, buff));
     }
 
     //% weight=29
+    //% subcategory="Advanced"
     //% group="Effector"
-    //% block="Set pump %pumpState Gripper %gripperState"
-    //% color=#ffcc66
-    export function setGripper(pumpState: PumpState, gripperState: GripperState): void {
+    //% block="Set Gripper %gripperState"
+    //% color=#1e90ff
+    export function setGripper(gripperState: GripperState): void {
         let buff = pins.createBuffer(2);
-        buff.setNumber(NumberFormat.UInt8LE, 0, pumpState)
+        buff.setNumber(NumberFormat.UInt8LE, 0, 1)
         buff.setNumber(NumberFormat.UInt8LE, 1, gripperState)
         sendMessage(createDobotPacket(63, 1, 0, buff));
     }
 
     // Communication functions
+    function initConnection(): void {
+        pins.setPull(1, PinPullMode.PullUp);
+        pins.setPull(8, PinPullMode.PullUp);
+        serial.redirect(
+            SerialPin.P1,
+            SerialPin.P8,
+            BaudRate.BaudRate115200
+        )
+        basic.pause(50);
+        basic.showIcon(IconNames.Happy);
+    }
 
     // Send message over serial
     function sendMessage(buffer: Buffer) : void
     {
+        if (!isInitialised)
+        {
+            initConnection();
+            isInitialised = true;
+        }
+
         serial.writeBuffer(buffer);
     }
 
