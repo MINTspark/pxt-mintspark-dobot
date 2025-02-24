@@ -1,6 +1,6 @@
 //% weight=100 color=#DC22E1 block="MINTspark DOBOT" blockId="MINTspark DOBOT" icon="\uf0e7"
 //% subcategories='["Basic", "Advanced", "AI"]'
-//% groups='["Setup", "Move", "Work"]'
+//% groups='["Setup", "Move", "Remote"]'
 namespace mintspark_dobot {
     class CartesianPosition{
         X: number;
@@ -330,7 +330,76 @@ namespace mintspark_dobot {
         sendMessage(createDobotPacket(63, 1, 0, buff));
     }
 
+    let remoteControlActive = false;
+
+    //% weight=10
+    //% subcategory="Advanced"
+    //% group="Remote"
+    //% block="Set Remote Channel to %channel"
+    //% color=#1e90ff
+    export function setRemoteChannel(channel: number): void {    
+        radio.setGroup(channel);
+    }
+
+    //% weight=9
+    //% subcategory="Advanced"
+    //% group="Remote"
+    //% block="Start remote control"
+    //% color=#1e90ff
+    export function startRemoteControl(channel: number): void {
+        remoteControlActive = true;
+    }
+
+    //% weight=8
+    //% subcategory="Advanced"
+    //% group="Remote"
+    //% block="Start remote control"
+    //% color=#1e90ff
+    export function stopRemoteControl(channel: number): void {
+        remoteControlActive = false;
+    }
+
+
+
+
     // Communication functions
+    let remoteControlCommands = { Start: "START", Stop: "STOP", MoveLinear: "MOVELI", MoveJump: "MOVEJU", JogCartesian: "JOGC", JogJoint: "JOGJ", PumpOff:"PUMPOFF", Grip:"GRIP" };
+
+    // When radio value is received
+    radio.onReceivedValue(function (name: string, value: number) {
+        if (!remoteControlActive) return;
+
+        switch(name)
+        {
+            case remoteControlCommands.Start:
+                moveToStartPosition(PtpMoveMode.Joint);
+                break;
+            case remoteControlCommands.Stop:
+                stopCommand();
+                break;
+            case remoteControlCommands.MoveLinear:
+                moveToFixedPosition(PtpMoveMode.Linear, value);
+                break;
+            case remoteControlCommands.MoveJump:
+                moveToFixedPosition(PtpMoveMode.Jump, value);
+                break;
+            case remoteControlCommands.JogCartesian:
+                moveJog(CoordinateSystem.Cartesian, value);
+                break;
+            case remoteControlCommands.JogJoint:
+                moveJog(CoordinateSystem.Joint, value);
+                break;
+            case remoteControlCommands.PumpOff:
+                setPumpOff();
+                break;
+            case remoteControlCommands.Grip:
+                setGripper(value);
+                break;
+            default:
+        }
+    })
+
+    // Setup DOBOT serial connection
     function initConnection(): void {
         pins.setPull(1, PinPullMode.PullUp);
         pins.setPull(8, PinPullMode.PullUp);
