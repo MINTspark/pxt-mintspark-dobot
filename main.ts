@@ -16,6 +16,20 @@ namespace mintspark_dobot {
             this.R = r;
         }
     }
+
+    class JointPosition {
+        J1: number;
+        J2: number;
+        J3: number;
+        J4: number;
+
+        constructor(j1: number, j2: number, j3: number, j4: number) {
+            this.J1 = j1;
+            this.J2 = j2;
+            this.J3 = j3;
+            this.J4 = j4;
+        }
+    }
     export enum PtpMode {
         //% block="JUMP XYZ"
         JUMP_XYZ, // JUMP mode, (x,y,z,r) is the target point in Cartesian coordinate system
@@ -84,6 +98,8 @@ namespace mintspark_dobot {
     let fixedCartesianPositions: CartesianPosition[] = [];
     let isInitialised = false;
     let startPosition: CartesianPosition = new CartesianPosition(210, 0, 80, 10);
+    let currentPositionCartesian: CartesianPosition;
+    let currentPositionJoint: JointPosition;
 
     //% weight=110
     //% subcategory="Advanced"
@@ -346,21 +362,26 @@ namespace mintspark_dobot {
     //% group="Remote"
     //% block="Start remote control"
     //% color=#1e90ff
-    export function startRemoteControl(channel: number): void {
+    export function startRemoteControl(): void {
         remoteControlActive = true;
     }
 
     //% weight=8
     //% subcategory="Advanced"
     //% group="Remote"
-    //% block="Start remote control"
+    //% block="Stop remote control"
     //% color=#1e90ff
-    export function stopRemoteControl(channel: number): void {
+    export function stopRemoteControl(): void {
         remoteControlActive = false;
+        basic.showNumber(currentPositionCartesian.X);
+        basic.showNumber(currentPositionCartesian.Y);
+        basic.showNumber(currentPositionCartesian.Z);
+        basic.showNumber(currentPositionCartesian.R);
     }
 
-
-
+    function requestPosition(){
+        sendMessage(createDobotPacket(10, 0, 0, pins.createBuffer(0)));
+    }
 
     // Communication functions
     let remoteControlCommands = { Start: "START", Stop: "STOP", MoveLinear: "MOVELI", MoveJump: "MOVEJU", JogCartesian: "JOGC", JogJoint: "JOGJ", PumpOff:"PUMPOFF", Grip:"GRIP" };
@@ -399,7 +420,7 @@ namespace mintspark_dobot {
         }
     })
 
-    // Setup DOBOT serial connection
+    // Setup DOBOT serial connection transmit
     function initConnection(): void {
         pins.setPull(1, PinPullMode.PullUp);
         pins.setPull(8, PinPullMode.PullUp);
@@ -409,7 +430,48 @@ namespace mintspark_dobot {
             BaudRate.BaudRate115200
         )
         basic.pause(50);
-        basic.showIcon(IconNames.Happy);
+        basic.showIcon(IconNames.Happy); 
+    }
+
+    // Setup DOBOT serial connection receive
+    control.inBackground(() => {
+        serial.setRxBufferSize(64);
+        while(true)
+        {
+            let buff = serial.readBuffer(0);
+            for (let i = 0; i < buff.length; i++) {
+                if (buff[i] == 0xAA && buff[i + 1] == 0xAA) {
+                    let cmd = buff.getNumber(NumberFormat.UInt8LE, i + 3);
+
+                    switch(cmd)
+                    {
+                        case 10:
+                            setCurrentPositionFromBuffer(buff.slice(i + 5, 32));
+                        break;
+                    }
+
+                }
+            }
+            
+            requestPosition();
+            basic.pause(50);
+        }
+    });
+
+    function setCurrentPositionFromBuffer(buffer : Buffer)
+    {
+        let x = buffer.getNumber(NumberFormat.Float32LE, 0);
+        let y = buffer.getNumber(NumberFormat.Float32LE, 4);
+        let z = buffer.getNumber(NumberFormat.Float32LE, 8);
+        let r = buffer.getNumber(NumberFormat.Float32LE, 12);
+
+        let j1 = buffer.getNumber(NumberFormat.Float32LE, 16);
+        let j2 = buffer.getNumber(NumberFormat.Float32LE, 20);
+        let j3 = buffer.getNumber(NumberFormat.Float32LE, 24);
+        let j4 = buffer.getNumber(NumberFormat.Float32LE, 28);
+
+        currentPositionCartesian = new CartesianPosition(x, y, z, r);
+        currentPositionJoint = new JointPosition(j1, j2, j3, j4);
     }
 
     // Send message over serial
