@@ -85,9 +85,9 @@ namespace mintspark_dobot {
     let isInitialised = false;
     let startPosition: CartesianPosition = new CartesianPosition(210, 0, 80, 10);
 
-    //% weight=95
+    //% weight=110
     //% subcategory="Advanced"
-    //% group="Move"
+    //% group="Setup"
     //% block="Set Startposition to|x %x y %y z %z r %r"
     //% color=#1e90ff
     //% inlineInputMode=external
@@ -96,23 +96,14 @@ namespace mintspark_dobot {
         movePtpJoint(PtpMoveMode.Joint, 0, 20, 30, 0);
     } 
 
-    //% weight=95
+    //% weight=105
     //% subcategory="Advanced"
-    //% group="Move"
+    //% group="Setup"
     //% block="Set fixed Position %index|x %x y %y z %z r %r"
     //% color=#1e90ff
     //% inlineInputMode=external
     export function setFixedPosition(index: number, x: number, y: number, z: number, r: number): void {
         fixedCartesianPositions[index] = new CartesianPosition(x, y, z, r);
-    }
-
-    //% weight=95
-    //% subcategory="Advanced"
-    //% group="Move"
-    //% block="Set Startposition %position"
-    //% color=#1e90ff
-    export function moveToPosition(): void {
-        movePtpCartesian(PtpMoveMode.Joint, startPosition.X, startPosition.Y, 30, 0);
     }
 
     //% weight=95
@@ -228,6 +219,28 @@ namespace mintspark_dobot {
         }
 
         sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(ptpMode, x, y, z, r)));
+    }
+
+    //% weight=42
+    //% subcategory="Advanced"
+    //% group="Move"
+    //% block="Move to Startposition mode %mode"
+    //% color=#1e90ff
+    export function moveToStartPosition(mode: PtpMoveMode): void {
+        movePtpCartesian(PtpMoveMode.Joint, startPosition.X, startPosition.Y, startPosition.Z, startPosition.R);
+    }
+
+    //% weight=41
+    //% subcategory="Advanced"
+    //% group="Move"
+    //% block="Move to Postion %positionIndex mode %mode"
+    //% color=#1e90ff
+    export function moveToFixedPosition(mode: PtpMoveMode, positionIndex: number): void {
+        let position = fixedCartesianPositions[positionIndex];
+        if (position != null)
+        {
+            movePtpCartesian(PtpMoveMode.Joint, position.X, position.Y, position.Z, position.R);
+        }
     }
 
     //% weight=38
