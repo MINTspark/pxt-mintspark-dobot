@@ -383,6 +383,16 @@ namespace mintspark_dobot {
         sendMessage(createDobotPacket(84, 1, 0, CreatePtpPayload(PtpMode.MOVJ_INC, j1, j2, j3, j4)));
     }
 
+    //% weight=69
+    //% group="Move"
+    //% block="Wait for %waitMs ms"
+    //% color=#1e90ff
+    export function waitForMs(waitMs: number): void {
+        let buff = pins.createBuffer(4);
+        buff.setNumber(NumberFormat.UInt32LE, 0, waitMs)
+        sendMessage(createDobotPacket(110, 1, 1, buff));
+    }
+
     //% weight=70
     //% group="Move"
     //% block="Stop Immediate"
@@ -456,7 +466,7 @@ namespace mintspark_dobot {
     }
 
     // Communication functions
-    let remoteControlCommands = { Start: "START", Stop: "STOP", MoveLinear: "MOVELI", MoveJump: "MOVEJU", JogCartesian: "JOGC", JogJoint: "JOGJ", PumpOff:"PUMPOFF", Grip:"GRIP" };
+    let remoteControlCommands = { Start: "START", Stop: "STOP", MoveLinear: "MOVELI", MoveJump: "MOVEJU", JogCartesian: "JOGC", JogJoint: "JOGJ", PumpOff:"PUMPOFF", Grip:"GRIP", Wait:"WAIT" };
 
     // When radio value is received
     radio.onReceivedValue(function (name: string, value: number) {
@@ -487,6 +497,9 @@ namespace mintspark_dobot {
                 break;
             case remoteControlCommands.Grip:
                 setGripper(value);
+                break;
+            case remoteControlCommands.Wait:
+                waitForMs(value);
                 break;
             default:
         }
