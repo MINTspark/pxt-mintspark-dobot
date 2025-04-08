@@ -399,7 +399,7 @@ namespace mintspark_dobot {
     //% color=#1e90ff
     export function stopCommand():void{
         sendMessage(createDobotPacket(241, 1, 0, pins.createBuffer(0)));
-        sendMessage(createDobotPacket(244, 1, 0, pins.createBuffer(0)));
+        sendMessage(createDobotPacket(245, 1, 0, pins.createBuffer(0)));
         setPumpOff();
     }
 
@@ -409,7 +409,7 @@ namespace mintspark_dobot {
     //% color=#1e90ff
     export function stopImmediateCommand(): void {
         sendMessage(createDobotPacket(242, 1, 0, pins.createBuffer(0)));
-        sendMessage(createDobotPacket(244, 1, 0, pins.createBuffer(0)));
+        sendMessage(createDobotPacket(245, 1, 0, pins.createBuffer(0)));
         setPumpOff();
     }
 
