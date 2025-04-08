@@ -395,10 +395,18 @@ namespace mintspark_dobot {
 
     //% weight=70
     //% group="Move"
-    //% block="Stop Immediate"
+    //% block="Stop"
     //% color=#1e90ff
     export function stopCommand():void{
         sendMessage(createDobotPacket(241, 1, 0, pins.createBuffer(0)));
+    }
+
+    //% weight=69
+    //% group="Move"
+    //% block="Stop Immediate"
+    //% color=#1e90ff
+    export function stopImmediateCommand(): void {
+        sendMessage(createDobotPacket(242, 1, 0, pins.createBuffer(0)));
     }
 
     //% weight=30
