@@ -398,9 +398,10 @@ namespace mintspark_dobot {
     //% block="Stop"
     //% color=#1e90ff
     export function stopCommand():void{
-        sendMessage(createDobotPacket(241, 1, 0, pins.createBuffer(0)));
         sendMessage(createDobotPacket(245, 1, 0, pins.createBuffer(0)));
-        setPumpOff();
+        setPumpOff(0);
+        sendMessage(createDobotPacket(241, 1, 0, pins.createBuffer(0)));
+
     }
 
     //% weight=69
@@ -409,8 +410,8 @@ namespace mintspark_dobot {
     //% color=#1e90ff
     export function stopImmediateCommand(): void {
         sendMessage(createDobotPacket(242, 1, 0, pins.createBuffer(0)));
+        setPumpOff(0);
         sendMessage(createDobotPacket(245, 1, 0, pins.createBuffer(0)));
-        setPumpOff();
     }
 
     //% weight=30
@@ -426,7 +427,7 @@ namespace mintspark_dobot {
     //% group="Effector"
     //% block="Set pump OFF"
     //% color=#1e90ff
-    export function setPumpOff(): void {
+    export function setPumpOff(isQueued : number = 1): void {
         let buff = pins.createBuffer(2);
         buff.setNumber(NumberFormat.UInt8LE, 0, 0)
         buff.setNumber(NumberFormat.UInt8LE, 1, 0)
